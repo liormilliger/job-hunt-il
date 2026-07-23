@@ -1,0 +1,8 @@
+config.json
+__pycache__/
+*.pyc
+scripts/cv_render/node_modules/
+brief_log.txt
+new_row.json
+last_row_added.json
+PORTING_NOTES.md
