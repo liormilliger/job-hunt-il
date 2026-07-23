@@ -121,7 +121,14 @@ def _run_bold(p):
 
 def refill(p, text):
     """Replace a paragraph's run text with `text`, preserving the paragraph's
-    pPr (alignment/style/spacing) and copying size/bold from its current runs."""
+    pPr (alignment/style/spacing) and copying size/bold from its current runs.
+
+    Deliberately does NOT touch paragraph-level bidi/jc -- that was tried
+    early in this project and caused visible left-justification (Word
+    interprets explicit jc differently once bidi is involved). The document's
+    RTL comes from the SECTION's bidi flag (see ensure_section_bidi below),
+    not per-paragraph settings; a correctly Word-authored template already
+    has it, and template-fill preserves the section as-is."""
     sz = _run_size(p)
     bold = _run_bold(p)
     for r in list(p.runs):
@@ -164,6 +171,19 @@ def _clone_after(p):
     return Paragraph(new_el, p._parent)
 
 
+def ensure_section_bidi(doc):
+    """Safety net: a properly Word-authored Hebrew CV has w:bidi set on the
+    SECTION (sectPr), which is what actually drives right-to-left layout for
+    the whole page -- confirmed by comparing a real working template (has it)
+    against a synthetically-built one (doesn't, and renders left-aligned
+    despite correct run-level w:rtl on every run). Normally a no-op; only
+    fires if the template is missing it."""
+    for section in doc.sections:
+        sectPr = section._sectPr
+        if sectPr.find(qn("w:bidi")) is None:
+            sectPr.append(sectPr.makeelement(qn("w:bidi"), {}))
+
+
 def render_cv_from_template(cv, out_path, template_path=None):
     """Fill the template: replace the professional summary and each role's bullets
     with the tailored text in `cv`. Headers, dates, education, skills, contact and
@@ -172,6 +192,7 @@ def render_cv_from_template(cv, out_path, template_path=None):
         raise ValueError("hebrew template_path required — set "
                          "'hebrew_cv_template' in config.json")
     doc = Document(template_path)
+    ensure_section_bidi(doc)
     allp = doc.paragraphs
 
     # --- pass 1: locate targets (no mutation, so indices stay valid) ---
@@ -249,6 +270,7 @@ def render_cover_from_template(cover, out_path, template_path=None):
         raise ValueError("hebrew template_path required — set "
                          "'hebrew_cv_template' in config.json")
     doc = Document(template_path)
+    ensure_section_bidi(doc)
     paras = doc.paragraphs
     head_proto = next((p for p in paras if p.style.name.startswith("Heading")), paras[0])
     body_proto = next((p for p in paras
