@@ -52,6 +52,9 @@ instead of asking from zero.
    Jobify): which titles, which seniority band, acceptable pivots.
 5. **Market scope** → within Israel: commute base and limits →
    `exclude_locations`; remote/hybrid preferences; industries to avoid, if any.
+5b. **Score thresholds** → `min_score` (floor for landing in the tracker at
+   all, default 65) and `generate_score_floor` (floor for getting a full CV
+   package, default 70). Confirm or adjust — never leave silently defaulted.
 6. **Compensation floor** → profile constraints (used for fit judgment only —
    never appears in documents; say that out loud so they answer honestly).
 7. **The hard question** → positioning.md: every career has one (gaps, short

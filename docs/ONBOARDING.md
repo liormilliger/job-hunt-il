@@ -58,6 +58,16 @@ Per role, one question:
 > regions to exclude outright? Remote/hybrid preferences? Industries you
 > won't touch?"
 
+## 5b. Score thresholds
+
+> "Two numbers decide what you actually see. `min_score` (default 65) is the
+> floor — anything scoring below it never lands in your tracker at all.
+> `generate_score_floor` (default 70) is higher: a job has to clear this
+> before I'll write it a full CV and cover letter, even if it's in your
+> tracker. Keep the defaults if you're not sure — they came from someone who
+> tuned them after seeing what 'too much noise' looks like. Want them
+> stricter or looser?"
+
 ## 6. Compensation floor
 
 > "What's the monthly gross below which you'd decline? This never appears in
