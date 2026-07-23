@@ -147,6 +147,13 @@ def ensure_candidates_sheet(wb: openpyxl.Workbook):
     return wb["Candidates"]
 
 
+def _no_formula(v):
+    # ponytail: scraped text starting with '=' is stored by openpyxl as a LIVE
+    # Excel formula (data_type 'f') — formula injection from a malicious job
+    # posting. A leading space keeps it inert text. Only '=' matters for xlsx.
+    return " " + v if isinstance(v, str) and v.startswith("=") else v
+
+
 def write_candidate_row(ws, job: dict):
     score = job.get("score", 0)
     thin = Side(style="thin", color="CCCCCC")
@@ -171,7 +178,7 @@ def write_candidate_row(ws, job: dict):
         job.get("jd_snippet", "")[:500],
         "New",
     ]
-    ws.append(row_data)
+    ws.append([_no_formula(x) for x in row_data])
     row_idx = ws.max_row
     for i, cell in enumerate(ws[row_idx], 1):
         cell.font = Font(name="Arial", size=10)
