@@ -30,15 +30,7 @@ TRACKER_PATH = _CFG["tracker"]
 BASE_URL = "https://jobify360.co.il"
 MYJOBS_URL = f"{BASE_URL}/myjobs"
 
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-if not ANTHROPIC_API_KEY:
-    try:
-        import winreg
-        _reg = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment")
-        ANTHROPIC_API_KEY, _ = winreg.QueryValueEx(_reg, "ANTHROPIC_API_KEY")
-        winreg.CloseKey(_reg)
-    except Exception:
-        pass
+ANTHROPIC_API_KEY = jh_config.api_key(_CFG)
 
 SCORE_THRESHOLD = 70
 SLEEP_BETWEEN_PAGES = 2.0
@@ -388,6 +380,25 @@ async def scrape_jobify360(seen: set) -> list:
 
         await asyncio.sleep(2)
 
+        # Jobify occasionally throws announcement modals (e.g. the
+        # "What's New" popup, seen live 22/07/2026) that sit over the page and
+        # intercept every click until dismissed. Kill any open modal +
+        # backdrop before interacting; harmless when none is present.
+        async def dismiss_modals():
+            try:
+                await page.keyboard.press("Escape")
+                await page.evaluate(
+                    "() => {"
+                    "  document.querySelectorAll('.modal.show, .modal-backdrop')"
+                    "    .forEach(e => e.remove());"
+                    "  document.body.classList.remove('modal-open');"
+                    "  document.body.style.overflow = '';"
+                    "}"
+                )
+            except Exception:
+                pass
+        await dismiss_modals()
+
         # ── Step 2: get the tab list from /myjobs ─────────────────────────
         # Try multiple selectors in case Jobify360 updated their markup
         tab_titles = await page.evaluate("""
@@ -446,6 +457,7 @@ async def scrape_jobify360(seen: set) -> list:
                 print(f"Navigating directly: {tab_info['title'][:60]}")
                 await page.goto(tab_href, wait_until="domcontentloaded", timeout=20000)
                 await asyncio.sleep(2)
+                await dismiss_modals()
             else:
                 # Fall back to re-loading /myjobs and clicking by index
                 if page.url.rstrip("/") != MYJOBS_URL.rstrip("/"):
@@ -461,6 +473,7 @@ async def scrape_jobify360(seen: set) -> list:
                     continue
 
                 print(f"Clicking: {tab_info['title'][:60]}")
+                await dismiss_modals()
                 await tabs[idx].click()
                 # Wait for either a myjob-roles URL or just a network idle
                 try:
