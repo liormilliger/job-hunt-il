@@ -51,9 +51,8 @@ install.bat
 
 `install.bat` installs the Python packages, Chromium, and the CV renderer,
 and scaffolds the config. Then set your Anthropic API key as an environment
-variable named `ANTHROPIC_API_KEY` (get one at console.anthropic.com —
-scoring a job costs fractions of an agora with Haiku; a full tailored CV
-package is a few agorot with Sonnet).
+variable named `ANTHROPIC_API_KEY` — 5-minute walkthrough (English + Hebrew,
+with real cost numbers): [docs/API_KEY.md](docs/API_KEY.md).
 
 ### 2. Talk to Claude (once, ~20 minutes)
 
