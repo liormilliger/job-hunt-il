@@ -50,7 +50,13 @@ Per role, one question:
 
 > "Which titles are you hunting? Give me the real list, including stretch
 > titles and acceptable pivots. These become the crawler searches, so a title
-> you don't list is a job you'll never see."
+> you don't list is a job you'll never see.
+>
+> One more thing this feeds: Jobify360 sorts its own listings into role tabs,
+> and I need the Hebrew AND English words that would appear on YOUR tabs —
+> not just your exact title. If you're outside logistics/operations/supply
+> chain, the default keyword list won't catch your tabs at all, so tell me
+> now or Jobify will quietly skip half your relevant postings."
 
 ## 5. Market scope (Israel)
 
@@ -86,7 +92,12 @@ Per role, one question:
 > "Do you have a Hebrew CV as a Word file? If yes, I'll wire it in — the
 > pipeline fills YOUR file, keeping your design, because that's the only way
 > Hebrew reliably survives Word. If not, Hebrew-language jobs get an English
-> package, which most Israeli employers accept."
+> package, which most Israeli employers accept.
+>
+> By default, the language of the JOB POSTING decides the language of your
+> CV — Hebrew posting gets a Hebrew CV, English gets English. Do you want
+> that, or should every application go out in one language regardless of how
+> the posting was written?"
 
 ## 9. API key
 
@@ -96,9 +107,16 @@ Per role, one question:
 
 ## Close (mandatory)
 
-Claude reads both finished files back in full:
+Claude reads back BOTH the finished files AND the config settings this
+conversation set — not just profile/positioning. Half the answers from this
+interview (titles, keywords, exclusions, thresholds, template path, language
+default) live in config.json, and none of them get a second look if the close
+only covers the two markdown files.
 
 > "This is profile.md — the facts I'll never deviate from. This is
 > positioning.md — how we frame them. Anything wrong in these files will be
 > wrong in every application, so read them like a proofreader, not like a
-> form. Sign off, or fix now."
+> form. And here's what went into config.json: target titles, Jobify
+> keywords, excluded locations, score thresholds, Hebrew template, language
+> default — one line each, so you can catch anything I misheard. Sign off,
+> or fix now."

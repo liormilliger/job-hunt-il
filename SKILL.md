@@ -48,8 +48,12 @@ instead of asking from zero.
 3. **Career facts not on the CV** → per role: what did you BUILD (systems
    implemented, processes created, zero-to-ones)? Any numbers you're sure of?
    Anything on the CV that's outdated or wrong?
-4. **Target positions** → config `search_titles` (and `role_keywords` for
-   Jobify): which titles, which seniority band, acceptable pivots.
+4. **Target positions** → config `search_titles`: which titles, which
+   seniority band, acceptable pivots. Also ask for the Hebrew AND English
+   tab-title keywords Jobify360 would use to categorize their role → config
+   `role_keywords`. This is separate from search_titles and easy to forget;
+   outside the operations/supply-chain default wordlist, skipping it means
+   Jobify silently never opens the user's own relevant tabs.
 5. **Market scope** → within Israel: commute base and limits →
    `exclude_locations`; remote/hybrid preferences; industries to avoid, if any.
 5b. **Score thresholds** → `min_score` (floor for landing in the tracker at
@@ -61,7 +65,10 @@ instead of asking from zero.
    stints, a pivot). Draft the honest, confident narrative WITH them.
 8. **Hebrew CV template** → if they have a Hebrew CV in Word, wire it as
    `hebrew_cv_template` (explain the rules in docs/HEBREW_CV_TEMPLATE.md).
-   If not, note that Hebrew jobs will get English packages.
+   If not, note that Hebrew jobs will get English packages. Also confirm
+   `language_default` (default "auto" = job-posting language decides the CV
+   language) — some users want every application in one fixed language
+   regardless of the posting.
 9. **API key** → confirm the env var named in `api_key_env` is set; if not,
    walk them through setting it. Never write the key into any file.
 
