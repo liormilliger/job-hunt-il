@@ -32,7 +32,12 @@ renderer, Microsoft Word for PDF export, Playwright Chromium), copies
 `config.example.json` → `config.json`, creates the Excel tracker, and scaffolds
 `profile.md` + `positioning.md` from `templates/`.
 
-After the script runs, YOU (Claude) run the onboarding interview. Work through
+After the script runs, YOU (Claude) run the onboarding interview — and YOU do
+all the file editing. The user never hand-edits JSON or markdown: you write
+`config.json`, `profile.md`, and `positioning.md` yourself from their answers,
+then re-run `python scripts/setup.py` yourself to scaffold the workdir and
+tracker. The user's only jobs in setup are answering questions and setting the
+API-key environment variable (which you walk them through). Work through
 these areas in order; write the answers into `config.json`, `profile.md`, and
 `positioning.md` as you go. If the user uploads or points to an existing CV,
 READ IT FIRST and pre-fill everything you can — then confirm and fill gaps
@@ -100,7 +105,11 @@ Notes for you:
 python scripts/generate_applications.py
 ```
 Processes Candidates rows with score ≥ `generate_score_floor`, `Gen CV` = Y,
-and an empty `CV Folder`. For each: tailors a CV and cover letter to the job
+and an empty `CV Folder`. The user can mark rows themselves in Excel, or just
+tell you which to pursue ("generate for the top 5", "the Teva one and the two
+in Holon") — then YOU set `Gen CV` = Y on those rows with openpyxl (tracker
+closed first) and run the generator. Choosing stays human; clicking doesn't
+have to. For each: tailors a CV and cover letter to the job
 description using the tailoring model (facts from `profile.md`, framing from
 `positioning.md`), renders Word + PDF, writes a
 `<DD-MM-YYYY>/<Company>_<Role>/` folder, and writes the folder path back to

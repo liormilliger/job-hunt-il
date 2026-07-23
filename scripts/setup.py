@@ -114,15 +114,19 @@ def main():
     cfg_path = os.path.join(SKILL_ROOT, "config.json")
     if not os.path.exists(cfg_path):
         shutil.copy(os.path.join(SKILL_ROOT, "config.example.json"), cfg_path)
-        print(f"\ncreated {cfg_path} — EDIT IT NOW (workdir, name, search titles), "
-              "then run setup again to scaffold the workdir.")
+        print(f"\ncreated {cfg_path} with placeholder values.")
+        print("Claude fills it in during the onboarding interview — open Claude "
+              "Code here and say: \"run the job-hunt-il onboarding\".")
+        print("(Prefer doing it by hand? Edit config.json, then run setup again.)")
         return
     with open(cfg_path, encoding="utf-8") as f:
         cfg = json.load(f)
 
     wd = cfg.get("workdir", "")
     if not wd or "you" in wd.lower().replace("your", ""):
-        print("\nconfig.json still has the example workdir — edit it first.")
+        print("\nconfig.json still has the placeholder workdir. Run the "
+              "onboarding interview in Claude Code (it fills this in), or edit "
+              "config.json yourself and run setup again.")
         return
     os.makedirs(wd, exist_ok=True)
 

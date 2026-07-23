@@ -1,7 +1,8 @@
 # The onboarding interview — what it asks and how it's framed
 
-This is the script Claude follows on first run (after `python scripts/setup.py`
-has created the files). It's a conversation, not a form: one area at a time,
+This is the script Claude follows on first run (after `install.bat` has
+installed dependencies and scaffolded the config). Claude does every file
+edit itself — config.json, profile.md, positioning.md — the user only answers. It's a conversation, not a form: one area at a time,
 follow-ups only where answers are thin, and everything gets read back for
 approval before it's saved. Budget 20–30 minutes.
 

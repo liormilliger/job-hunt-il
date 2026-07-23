@@ -39,98 +39,55 @@ from inventing metrics. Tailored, but never fabricated.
 
 ## Getting started
 
-### Step 1 — install (10 minutes, once)
+Three things are yours to do. Everything else, Claude does.
+
+### 1. Install (once)
 
 ```bash
 git clone <this repo> job-hunt-il
 cd job-hunt-il
-pip install openpyxl anthropic python-docx playwright docx2pdf
-python -m playwright install chromium
-cd scripts/cv_render && npm install && cd ../..
+install.bat
 ```
 
-Set your Anthropic API key as an environment variable named
-`ANTHROPIC_API_KEY` (get one at console.anthropic.com — scoring a job costs
-fractions of an agora with Haiku; a full tailored CV package is a few
-agorot with Sonnet).
+`install.bat` installs the Python packages, Chromium, and the CV renderer,
+and scaffolds the config. Then set your Anthropic API key as an environment
+variable named `ANTHROPIC_API_KEY` (get one at console.anthropic.com —
+scoring a job costs fractions of an agora with Haiku; a full tailored CV
+package is a few agorot with Sonnet).
 
-### Step 2 — run setup twice
+### 2. Talk to Claude (once, ~20 minutes)
 
-```bash
-python scripts/setup.py    # checks dependencies, creates config.json
-```
+Open Claude Code in this folder (or copy the folder into `~/.claude/skills/`)
+and say:
 
-Open `config.json` and fill in your name, a `workdir` folder (where your
-tracker and applications will live), and your target job titles. Then:
+> **"run the job-hunt-il onboarding"**
 
-```bash
-python scripts/setup.py    # creates the tracker + scaffolds profile.md, positioning.md
-```
+Claude interviews you — start by handing it your current CV, in any
+language — and then does ALL the file work itself: fills `config.json`,
+builds `profile.md` (the facts of your career) and `positioning.md` (how to
+tell them), creates your Excel tracker, and reads everything back for your
+sign-off. You never edit a config file by hand.
 
-### Step 3 — the onboarding interview (the real setup)
+The full interview script is in [docs/ONBOARDING.md](docs/ONBOARDING.md) if
+you want to see what's coming.
 
-Copy this folder into `~/.claude/skills/` and open a Claude Code session.
-Say: **"run the job-hunt-il onboarding interview."** Claude will interview
-you — start by handing it your current CV, in any language — and build
-`profile.md` (the facts of your career) and `positioning.md` (how to tell
-them). Budget 20–30 minutes and take it seriously: every CV the pipeline
-ever writes comes from these two files, and Claude is forbidden from
-inventing anything that isn't in them.
-
-The full interview script is in [docs/ONBOARDING.md](docs/ONBOARDING.md), so
-you can see exactly what's asked and why before you start.
-
-### Step 4 — first crawl
-
-```bash
-cd scripts
-python crawl_jobify.py      # Israeli boards via Jobify360 (needs your Jobify login)
-python crawl_linkedin.py    # LinkedIn, Israel geo (needs your LinkedIn login)
-```
-
-A real Chrome window opens; log in when asked. Every job found is scored
-0–100 against your profile; anything at or above the floor lands in your
-tracker's Candidates sheet with honest strengths and gaps.
-
-### Step 5 — generate applications
-
-Open the tracker, put **Y** in the "Gen CV" column for the candidates you
-want to pursue, close Excel, then:
-
-```bash
-python generate_applications.py
-```
-
-Each marked job gets a folder with a tailored CV + cover letter (Word and
-PDF). Hebrew-language jobs are rendered by filling YOUR OWN Hebrew Word CV
-(see [docs/HEBREW_CV_TEMPLATE.md](docs/HEBREW_CV_TEMPLATE.md)) — the only
-approach we found that survives Word's RTL handling.
-
-### Step 6 — run the pipeline day to day
-
-```bash
-python sync_tracker.py   # promotes candidates you marked Applied/Interview
-python brief.py          # your pipeline at a glance
-```
-
-Change a candidate's Status to Applied / Phone Screen / Interview / Offer in
-Excel and the sync moves it to the Applications sheet. `brief.py` shows what's
-filed, what's stale, and which new finds are worth a look. To automate the
-brief every morning, see [docs/SCHEDULING.md](docs/SCHEDULING.md). If a crawl
-run fails mid-scoring (API credit ran out), nothing is lost:
-`python clean_failed_run.py DD/MM/YYYY` removes exactly the failed batch and
-the next crawl re-finds and re-scores those jobs.
-
-## Daily use
+### 3. Then just talk
 
 | You say | What happens |
 |---|---|
-| "run the crawlers" | Crawl + score into the tracker's Candidates sheet |
-| "generate CVs for today's finds" | Tailored packages for rows you marked Gen CV = Y |
-| "add this job: \<url\>" | Score, folder, CV + cover, tracker row |
-| "I have an interview at X" | Research + prep brief with salary data |
-| "how's my pipeline?" | Sync + status brief |
-| "the run failed, clean it" | Guarded removal of the failed batch only |
+| "run the crawlers" | Claude runs both crawlers; a Chrome window opens — **logging in to LinkedIn/Jobify is your part** — then every job is scored 0–100 against your profile and lands in the tracker |
+| "generate CVs for the top 5" (or mark **Gen CV = Y** yourself in Excel) | Claude marks the rows and runs the generator: each job gets a folder with a tailored CV + cover letter, Word and PDF. Hebrew jobs are rendered by filling YOUR OWN Hebrew Word CV ([docs/HEBREW_CV_TEMPLATE.md](docs/HEBREW_CV_TEMPLATE.md)) |
+| "add this job: \<url\>" | Claude fetches the posting, scores it honestly, and files the full package: folder, CV, cover letter, tracker row |
+| "I have an interview at X" | Live research on the company and interviewer, your strongest hooks, gap-framing scripts, questions to ask, current Israeli salary benchmarks |
+| "how's my pipeline?" | Claude syncs the tracker (Applied/Interview promotions) and gives you the brief: filed, awaiting, stale, fresh finds worth a look |
+| "the run failed, clean it" | Claude removes exactly the failed batch (guarded — rows you touched are never deleted); the next crawl re-finds and re-scores them |
+
+The two things that stay manual by design: **logging in** to the job boards
+(it's your account, in a real browser window), and **deciding which jobs to
+pursue**. Everything mechanical belongs to Claude.
+
+To automate the daily brief without asking, see
+[docs/SCHEDULING.md](docs/SCHEDULING.md).
 
 ## Honesty notes
 
