@@ -9,7 +9,6 @@ description: >
   brief. Use when the user wants to crawl for jobs, score job fits, generate
   a tailored CV/cover letter, add a job to their tracker, prep for an
   interview, clean a failed run, or see their pipeline status.
----
 
 # job-hunt-il — Israeli job-hunt pipeline
 
