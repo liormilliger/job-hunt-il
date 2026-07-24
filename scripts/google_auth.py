@@ -57,8 +57,15 @@ def get_credentials(cfg: dict):
     creds_path = _resolve(cfg, "google_credentials", "credentials.json")
 
     creds = None
-    if os.path.exists(token_path):
-        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+    if os.path.exists(token_path) and os.path.getsize(token_path) > 0:
+        try:
+            creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+        except (ValueError, OSError) as e:
+            # Empty/corrupted/wrong-shape token file (e.g. someone pasted the
+            # client secret in here instead of a real token) — treat it the
+            # same as "no token yet" rather than crashing.
+            print(f"  NOTE: ignoring unreadable token file at {token_path} ({e})")
+            creds = None
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:

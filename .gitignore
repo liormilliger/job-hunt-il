@@ -6,3 +6,7 @@ brief_log.txt
 new_row.json
 last_row_added.json
 PORTING_NOTES.md
+venv/
+google-cred.json
+google-token.txt
+
