@@ -5,10 +5,13 @@ Hebrew CV + cover-letter rendering, by FILLING the user's own Hebrew Word CV
 
 Why fill instead of generate: Word's RTL/bidi is finicky, and a from-scratch
 python-docx file (any recipe we tried) garbles in real Word even when it looks
-fine in the docx2pdf preview. The one thing that renders correctly in Word is
+fine in a PDF preview. The one thing that renders correctly in Word is
 the user's own file's paragraph structure. So we keep the template's paragraphs (their
 pPr carries the settings that make bidi work) and only swap the RUN TEXT inside
-them. Verified against docx2pdf, which is faithful for files built this way.
+them. This was verified against docx2pdf/Word specifically. PDF export now goes
+through Google Drive instead (see drive_pdf.py) — Drive's docx conversion isn't
+guaranteed pixel-identical to Word's, so re-check one real Hebrew CV's PDF
+output after switching (docs/GOOGLE_SETUP.md has a note on this).
 
 Run-text rule (matches how the template splits runs):
   - split each line into per-script runs; Hebrew runs get <w:rtl/>, Latin runs

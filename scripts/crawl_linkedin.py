@@ -19,8 +19,8 @@ import re
 import time
 import datetime
 import anthropic
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+import gsheets_compat as openpyxl
+from gsheets_compat import Font, PatternFill, Alignment, Border, Side
 from playwright.async_api import async_playwright
 
 from crawler_filters import should_skip

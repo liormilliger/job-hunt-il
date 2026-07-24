@@ -3,12 +3,14 @@ name: job-hunt-il
 description: >
   End-to-end job-hunt pipeline for the Israeli market: crawl Israeli job
   boards (Jobify360 + LinkedIn Israel), score every job against the user's
-  real profile with Claude, track everything in one Excel tracker, generate
-  tailored CVs and cover letters (English and Hebrew, including reliable
-  Hebrew Word rendering), prep for interviews, and produce a daily pipeline
-  brief. Use when the user wants to crawl for jobs, score job fits, generate
-  a tailored CV/cover letter, add a job to their tracker, prep for an
-  interview, clean a failed run, or see their pipeline status.
+  real profile with Claude, track everything in one Google Sheet tracker,
+  generate tailored CVs and cover letters (English and Hebrew, including
+  reliable Hebrew Word-template rendering, exported to PDF via Google Drive),
+  prep for interviews, and produce a daily pipeline brief. Cross-platform
+  (Windows/macOS/Linux) — no Microsoft Office required. Use when the user
+  wants to crawl for jobs, score job fits, generate a tailored CV/cover
+  letter, add a job to their tracker, prep for an interview, clean a failed
+  run, or see their pipeline status.
 
 # job-hunt-il — Israeli job-hunt pipeline
 
@@ -27,9 +29,10 @@ setup first. Never hardcode user facts — everything personal comes from
 python scripts/setup.py
 ```
 Interactive: checks dependencies (Python packages, Node for the English CV
-renderer, Microsoft Word for PDF export, Playwright Chromium), copies
-`config.example.json` → `config.json`, creates the Excel tracker, and scaffolds
-`profile.md` + `positioning.md` from `templates/`.
+renderer, Playwright Chromium), copies `config.example.json` → `config.json`,
+creates the Google Sheet tracker (first run opens a browser for Google
+sign-in — see `docs/GOOGLE_SETUP.md`), and scaffolds `profile.md` +
+`positioning.md` from `templates/`.
 
 After the script runs, YOU (Claude) run the onboarding interview — and YOU do
 all the file editing. The user never hand-edits JSON or markdown: you write
@@ -92,8 +95,9 @@ model; jobs under `min_score` or in `exclude_locations` are skipped; the rest
 land in the tracker's **Candidates** sheet as status "New".
 
 Notes for you:
-- The tracker must be CLOSED in Excel before any crawl or write. Check for a
-  `~$` lock file next to the tracker; if present, ask the user to close Excel.
+- The tracker is a Google Sheet now — no "close Excel first" lock to check
+  for. It's fine for the user to have it open in a browser tab while a crawl
+  writes to it.
 - If scoring fails (API error / credit limit), rows are written with score =
   `min_score` and Strengths = "SCORING FAILED — review/rescore manually". They
   are visible, not silently dropped. Clean them with `clean` and re-run after
@@ -104,13 +108,14 @@ Notes for you:
 python scripts/generate_applications.py
 ```
 Processes Candidates rows with score ≥ `generate_score_floor`, `Gen CV` = Y,
-and an empty `CV Folder`. The user can mark rows themselves in Excel, or just
-tell you which to pursue ("generate for the top 5", "the Teva one and the two
-in Holon") — then YOU set `Gen CV` = Y on those rows with openpyxl (tracker
-closed first) and run the generator. Choosing stays human; clicking doesn't
-have to. For each: tailors a CV and cover letter to the job
-description using the tailoring model (facts from `profile.md`, framing from
-`positioning.md`), renders Word + PDF, writes a
+and an empty `CV Folder`. The user can mark rows themselves in the tracker, or
+just tell you which to pursue ("generate for the top 5", "the Teva one and
+the two in Holon") — then YOU set `Gen CV` = Y on those rows via
+`gsheets_compat` (see `scripts/generate_applications.py`) and run the
+generator. Choosing stays human; clicking doesn't have to. For each: tailors
+a CV and cover letter to the job description using the tailoring model
+(facts from `profile.md`, framing from `positioning.md`), renders .docx +
+PDF (PDF via Google Drive — no Word/LibreOffice needed), writes a
 `<DD-MM-YYYY>/<Company>_<Role>/` folder, and writes the folder path back to
 the tracker.
 
@@ -120,7 +125,10 @@ the tracker.
   docx from scratch. From-scratch Hebrew docx garbles in real Word; template
   fill is the only approach that survives. Rules the user's template must
   follow: `docs/HEBREW_CV_TEMPLATE.md`. If no template is configured, Hebrew
-  jobs get an English CV and a note.
+  jobs get an English CV and a note. Since PDF export moved from Word to
+  Google Drive's conversion, spot-check one real Hebrew CV's PDF output the
+  first time — Drive's docx conversion isn't guaranteed pixel-identical to
+  Word's.
 - Language is auto-detected per job (Hebrew JD → Hebrew CV) unless config says
   otherwise.
 
@@ -179,14 +187,13 @@ re-found and re-scored on the next crawl (dedup no longer sees them).
 - **Statuses** (exact strings): New, Skip, Moved (Candidates); Draft, Applied,
   Phone Screen, Interview, Offer, Rejected, Withdrawn (Applications).
 - **One folder per application**: `<Company>_<Role>/` with CV + cover letter
-  (Word and PDF). Crawler-generated packages live under a `<DD-MM-YYYY>/` date
-  folder.
+  (.docx and PDF). Crawler-generated packages live under a `<DD-MM-YYYY>/`
+  date folder.
 - **Facts discipline**: every CV line traces to `profile.md`. No invented
   metrics, ever. If a tailored draft contains a number not in the profile,
   remove it.
 - **Writing style**: plain language, no AI-tells ("leverage", "seamless",
   "passionate"), sentence variety, em-dashes sparingly. Hebrew: direct
   register, no melitzot.
-- **Never write to the tracker while it's open in Excel.**
 - **API key** comes from the env var named in config. Never write it to any
   file.

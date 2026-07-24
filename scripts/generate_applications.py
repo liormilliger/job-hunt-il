@@ -34,9 +34,9 @@ import subprocess
 import time
 import datetime
 import anthropic
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment
-from docx2pdf import convert as docx2pdf_convert
+import gsheets_compat as openpyxl
+from gsheets_compat import Font, PatternFill, Alignment
+from drive_pdf import convert as docx2pdf_convert
 from hebrew_render import render_cv_from_template, render_cover_from_template
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -360,7 +360,7 @@ def find_em_dash_violations(content: dict) -> list:
     return violations
 
 
-# ── RENDER: docx via Node, then PDF via Word ─────────────────────────────────
+# ── RENDER: docx via Node, then PDF via Google Drive ──────────────────────────
 def render_docx(spec: dict, out_path: str):
     tmp_json = out_path + ".tmp.json"
     with open(tmp_json, "w", encoding="utf-8") as f:
@@ -382,18 +382,19 @@ def render_docx(spec: dict, out_path: str):
 
 
 def docx_to_pdf(docx_path: str, pdf_path: str, retries: int = 2):
-    """Word COM automation is flaky when conversions fire back-to-back in
-    the same process (observed: "Open.SaveAs" failures that succeed when
-    retried standalone). Retry with a short pause before giving up."""
+    """Converts via Google Drive (upload -> auto-convert -> export PDF -> delete
+    temp Doc); see drive_pdf.py. This is a network round-trip per document, so
+    transient failures (rate limit, dropped connection) are worth a retry
+    before giving up."""
     last_error = None
     for attempt in range(retries + 1):
         try:
-            docx2pdf_convert(docx_path, pdf_path)
+            docx2pdf_convert(docx_path, pdf_path, cfg=_CFG)
             return
         except Exception as e:
             last_error = e
             if attempt < retries:
-                print(f"    Word conversion failed ({e}), retrying in 3s...")
+                print(f"    Drive PDF conversion failed ({e}), retrying in 3s...")
                 time.sleep(3)
     raise last_error
 

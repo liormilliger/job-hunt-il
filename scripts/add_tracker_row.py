@@ -16,8 +16,8 @@ new_row.json format (all strings unless noted):
   "role": "Supply Chain Manager",
   "description": "One-liner about the role",
   "score": 85,                    // number
-  "cv_path": "C:\\\\Users\\\\you\\\\my-job-hunt\\\\Acme_SC_Manager\\\\CV.pdf",
-  "cl_path": "C:\\\\Users\\\\you\\\\my-job-hunt\\\\Acme_SC_Manager\\\\Cover_Letter.pdf",
+  "cv_path": "/Users/you/my-job-hunt/Acme_SC_Manager/CV.pdf",
+  "cl_path": "/Users/you/my-job-hunt/Acme_SC_Manager/Cover_Letter.pdf",
   "status": "Draft",              // Draft | Applied | Phone Screen | Interview | Offer | Withdrawn
   "notes": ""
 }
@@ -25,7 +25,8 @@ new_row.json format (all strings unless noted):
 Rules preserved from the old workflow:
 - Row 2 is the sample row, never overwritten. First empty row from row 3 down.
 - Status values must match what the morning dashboard understands (see list above).
-- Close Excel before running.
+- The tracker is a Google Sheet now, so there's no "close Excel first" lock to
+  worry about — Sheets handles concurrent access itself.
 """
 
 import json
@@ -33,8 +34,7 @@ import os
 import sys
 from datetime import datetime
 
-from openpyxl import load_workbook
-from openpyxl.styles import Font, Alignment, Border, Side
+from gsheets_compat import load_workbook, Font, Alignment, Border, Side
 
 import jh_config
 
@@ -47,8 +47,10 @@ DONE_FILE = os.path.join(_CFG["workdir"], "last_row_added.json")
 VALID_STATUSES = {"Draft", "Applied", "Phone Screen", "Interview", "Offer", "Withdrawn", "Rejected"}
 
 
-def to_file_url(win_path):
-    return "file:///" + win_path.replace("\\", "/")
+def to_file_url(local_path):
+    # Works for both Windows-style ("C:\...") and POSIX-style ("/Users/...")
+    # paths — backslash-to-slash is a no-op on the latter.
+    return "file:///" + local_path.replace("\\", "/")
 
 
 def main():

@@ -1,7 +1,7 @@
 # The onboarding interview — what it asks and how it's framed
 
-This is the script Claude follows on first run (after `install.bat` has
-installed dependencies and scaffolded the config). Claude does every file
+This is the script Claude follows on first run (after `install.sh`/`install.bat`
+has installed dependencies and scaffolded the config). Claude does every file
 edit itself — config.json, profile.md, positioning.md — the user only answers. It's a conversation, not a form: one area at a time,
 follow-ups only where answers are thin, and everything gets read back for
 approval before it's saved. Budget 20–30 minutes.
@@ -105,6 +105,15 @@ Per role, one question:
 > "Scoring and CV tailoring run on your own Anthropic API key. Is
 > ANTHROPIC_API_KEY set as an environment variable? If not, I'll walk you
 > through it — it never gets written into a file."
+
+## 10. Google connection
+
+> "One more one-time thing: the tracker lives in a Google Sheet, and PDF
+> export goes through Google Drive, so I'll need you signed in to your
+> Google account. Have you set up the OAuth client yet (docs/GOOGLE_SETUP.md,
+> ~5 minutes)? If not, let's do that now — the first script that touches the
+> tracker will open a browser for you to approve access, and it's silent
+> after that."
 
 ## Close (mandatory)
 

@@ -30,10 +30,12 @@ def load() -> dict:
         )
     with open(path, encoding="utf-8") as f:
         cfg = json.load(f)
-    # Resolve workdir-relative paths
+    # Resolve workdir-relative paths. NOTE: "tracker" is deliberately excluded
+    # here — since the Google Sheets switch it holds a spreadsheet ID (or ""
+    # until setup.py creates one), not a filesystem path.
     wd = cfg.get("workdir", "")
-    for key in ("tracker", "profile_md", "positioning_md", "hebrew_cv_template",
-                "output_dir"):
+    for key in ("profile_md", "positioning_md", "hebrew_cv_template",
+                "output_dir", "google_credentials", "google_token"):
         val = cfg.get(key, "")
         if val and not os.path.isabs(val):
             cfg[key] = os.path.normpath(os.path.join(wd, val))

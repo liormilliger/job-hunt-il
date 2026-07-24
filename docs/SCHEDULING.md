@@ -32,8 +32,11 @@ ship email credentials handling.
 
 ## Notes
 
-- The sync + brief are read-mostly and safe to run unattended; the one rule
-  is that the tracker must not be open in Excel at run time (sync writes to
-  it). Schedule it for before you start your day.
+- The sync + brief are read-mostly and safe to run unattended — the tracker
+  is a Google Sheet, so there's no local file lock to worry about even if you
+  have it open in a browser tab. Schedule it for before you start your day.
+- The first unattended run needs Google auth already completed once
+  interactively (docs/GOOGLE_SETUP.md) — the cached token is then reused
+  silently by the scheduled runs.
 - Crawling is NOT suited to unattended scheduling: LinkedIn needs a real,
   logged-in browser window. Run crawls manually.

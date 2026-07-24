@@ -6,7 +6,7 @@ Run sync_tracker.py first so Candidates promotions are reflected.
 """
 import datetime
 import sys
-import openpyxl
+import gsheets_compat as openpyxl
 import jh_config
 
 sys.stdout.reconfigure(encoding="utf-8")

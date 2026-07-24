@@ -9,7 +9,7 @@ SCORING-FAILED signature (score == min_score, 'FAILED' in Strengths, status
 generated — can never be caught, even on the right date.
 """
 import sys
-import openpyxl
+import gsheets_compat as openpyxl
 import jh_config
 
 sys.stdout.reconfigure(encoding="utf-8")

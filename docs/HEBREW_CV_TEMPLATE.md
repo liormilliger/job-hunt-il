@@ -8,6 +8,13 @@ numbers, split words, wrong-side punctuation. The only structure that renders
 reliably in Word is a file that was authored in Word. So the pipeline takes
 YOUR CV and swaps only the text inside it.
 
+Note: you don't need Word *installed* to use this pipeline — the .docx just
+needs to have been authored in Word at some point (a CV from a work computer,
+a friend's copy, etc. all qualify). PDF export now goes through Google Drive
+instead of Word, so double-check the PDF of your first generated Hebrew CV
+looks right — Drive's docx conversion is good but not guaranteed
+pixel-identical to Word's own rendering.
+
 ## What the pipeline replaces
 - The professional summary paragraph (tailored per job).
 - The bullet lines under each role (tailored per job).

@@ -13,15 +13,15 @@ How to use it:
 Dedup: if Applications already has a row with the same company + role,
 the candidate is just marked "Moved" and not copied again.
 
-Close Excel before running - the script writes to the tracker.
+The tracker is a Google Sheet, so there's no "close Excel first" lock to
+worry about.
 """
 
 import os
 import sys
 from datetime import datetime
 
-from openpyxl import load_workbook
-from openpyxl.styles import Font, Alignment, Border, Side
+from gsheets_compat import load_workbook, Font, Alignment, Border, Side
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 import jh_config
@@ -45,8 +45,11 @@ def first_empty_row(ws, start=3):
 def main():
     try:
         wb = load_workbook(TRACKER)
-    except PermissionError:
-        print("ERROR: tracker is locked - close the tracker in Excel and run again.")
+    except FileNotFoundError as e:
+        print(f"ERROR: Google auth not set up yet ({e})")
+        sys.exit(1)
+    except Exception as e:
+        print(f"ERROR: could not load the tracker Google Sheet: {e}")
         sys.exit(1)
 
     if "Candidates" not in wb.sheetnames:

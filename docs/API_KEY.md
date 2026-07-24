@@ -18,6 +18,10 @@ A typical week of active job hunting costs less than a cup of coffee.
 4. **Create the key**: API Keys → Create Key. Name it `job-hunt-il`. Copy it
    immediately — it's shown only once.
 5. **Store it as an environment variable** (never in a file):
+   - macOS/Linux: add a line to your shell profile (`~/.zshrc` for the
+     default macOS shell, `~/.bashrc` on most Linux setups):
+     `export ANTHROPIC_API_KEY="sk-ant-..."`, then `source ~/.zshrc` (or open
+     a new terminal).
    - Windows: Start → search "environment variables" → "Edit environment
      variables for your account" → New → Name: `ANTHROPIC_API_KEY`,
      Value: your key → OK.
@@ -37,6 +41,9 @@ A typical week of active job hunting costs less than a cup of coffee.
 4. **יוצרים מפתח**: API Keys → Create Key. תנו לו שם `job-hunt-il` והעתיקו
    מיד — הוא מוצג פעם אחת בלבד.
 5. **שומרים אותו כמשתנה סביבה** (אף פעם לא בקובץ):
+   - macOS/Linux: מוסיפים שורה לקובץ הפרופיל של השל (`~/.zshrc` ב-macOS,
+     `~/.bashrc` ברוב הלינוקסים): `export ANTHROPIC_API_KEY="sk-ant-..."`,
+     ואז `source ~/.zshrc` (או פותחים טרמינל חדש).
    - Windows: התחל → מחפשים "environment variables" → "עריכת משתני סביבה
      עבור החשבון שלך" → New → שם: `ANTHROPIC_API_KEY`, ערך: המפתח → OK.
    - פותחים טרמינל **חדש** אחר כך (חלונות פתוחים לא רואים את השינוי).
